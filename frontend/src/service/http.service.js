@@ -38,7 +38,7 @@ async function ajax(endpoint, method = 'GET', data = null, query = null) {
             switch (err.response.status) {
                 case 401:
                     userService.logout();
-                    router.push('/login');
+                    router.push('/');
                     break;
             }
         throw err

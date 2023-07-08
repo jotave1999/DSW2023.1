@@ -5,15 +5,6 @@ const utilService = require('../../service/utils.service');
 const socketService = require('../../service/socket.service');
 
 const collectionDb = 'boards';
-const demoBoard = {
-    '61dea9c1d8fc4e646dcad719': require('../../json/61dea9c1d8fc4e646dcad719.json'),
-    '61dea94fd8fc4e646dca56dc': require('../../json/61dea94fd8fc4e646dca56dc.json'),
-    '61dea970d8fc4e646dca7b99': require('../../json/61dea970d8fc4e646dca7b99.json'),
-    '61deaa7bd8fc4e646dcba9bf': require('../../json/61deaa7bd8fc4e646dcba9bf.json'),
-    '61deaafcd8fc4e646dcc361c': require('../../json/61deaafcd8fc4e646dcc361c.json'),
-    '61deab97d8fc4e646dcce7db': require('../../json/61deab97d8fc4e646dcce7db.json'),
-    '61debc360f00b72a8c131ebd': require('../../json/61debc360f00b72a8c131ebd.json'),
-};
 
 module.exports = {
     premission,

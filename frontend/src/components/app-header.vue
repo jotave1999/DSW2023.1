@@ -64,7 +64,7 @@ export default {
   },
   methods: {
     login() {
-      this.$router.push("/login");
+      this.$router.push("/");
     },
     async logOut() {
       this.user = await this.$store.dispatch({
