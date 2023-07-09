@@ -2,7 +2,7 @@ const boardService = require('./board.service.js');
 const logger = require('../../service/logger.service');
 
 module.exports = {
-    requirePremission: premission,
+    requirePermission: permission,
     getAll: query,
     getById: get,
     addBoard: add,
@@ -19,8 +19,8 @@ module.exports = {
     removeItem,
 }
 
-// MIDDLEWARE CHECK FOR PREMISSION
-async function premission(req, res, next) {
+// MIDDLEWARE CHECK FOR PerMISSION
+async function permission(req, res, next) {
     // next();
     // return;
     const id = req.params.id || req.body._id || req.query.boardId;
@@ -29,7 +29,7 @@ async function premission(req, res, next) {
         res.status(401).end('Unauthorized!');
         return;
     }
-    const board = await boardService.premission(id, user._id);
+    const board = await boardService.permission(id, user._id);
     if (!board) {
         res.status(403).end('Unauthorized!');
         return

@@ -60,10 +60,45 @@ async function remove(req, res) {
     }
 }
 
+async function requestPassRecover(req, res) {
+    try {
+        const {email} = req.body;
+        res.json(await userService.requestPassRecover(email));
+    } catch (err) {
+        logger.error('Failed to request password recover to user', err);
+        res.status(500).send({ err: 'Failed to request password recover to user' });
+    }
+}
+
+async function passRecover(req, res) {
+    try {
+        const {recoverString, password} = req.body;
+        res.json(await userService.passRecover(recoverString,password));
+    } catch (err) {
+        logger.error('Failed to password recover to user', err);
+        res.status(500).send({ err: 'Failed to password recover to user' });
+    }
+}
+
+async function changePass(req, res) {
+    try {
+        const {user} = req.session;
+        const {password} = req.body;
+        res.json(await userService.changePass(user,password));
+    } catch (err) {
+        logger.error('Failed to change user password', err);
+        res.status(500).send({ err: 'Failed to change user password' });
+    }
+}
+
 module.exports = {
     getAll: query,
     getById: get,
     addNew: add,
     updateUser: update,
-    removeUser: remove
+    removeUser: remove,
+    requestPassRecover,
+    changePass,
+    passRecover
+    
 }

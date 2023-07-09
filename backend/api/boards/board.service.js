@@ -7,7 +7,7 @@ const socketService = require('../../service/socket.service');
 const collectionDb = 'boards';
 
 module.exports = {
-    premission,
+    permission,
     query,
     get,
     add,
@@ -24,7 +24,7 @@ module.exports = {
     setActivity,
 }
 
-async function premission(boardId, userId) {
+async function permission(boardId, userId) {
     try {
         const id = new ObjectId(boardId);
         const collection = await dbService.getCollection(collectionDb);
