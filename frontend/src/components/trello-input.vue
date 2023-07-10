@@ -6,7 +6,7 @@
       @click="isListFormOpen = !isListFormOpen"
     >
       <span class="icon"></span>
-      Add a list
+      Adicionar uma Lista
     </div>
     <div
       v-else
@@ -15,7 +15,7 @@
     >
       <input type="text" class="input-form" />
       <div class="add-card-control">
-        <button>Add Card</button>
+        <button>Adicionar Cartão</button>
         <span class="icon" @click="isListFormOpen = !isListFormOpen"></span>
       </div>
     </div>

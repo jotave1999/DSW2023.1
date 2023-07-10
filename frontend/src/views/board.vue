@@ -7,8 +7,8 @@
     <msg-modal
       :msg="msg"
       @close="msg = null"
-      @delete="(data) => remove('delete', data)"
-      @cancel="msg = null"
+      @deletar="(data) => remove('deletar', data)"
+      @cancelar="msg = null"
     />
     <card-details
       v-if="$route.query.listId && $route.query.cardId"
@@ -19,8 +19,10 @@
     <div class="board-fixed-container" :style="background">
       <board-nav
         v-if="board"
+        @removeBoard1="(data) => msgConfirm('board', data)"
         :board="board"
         :filter="filterBy"
+        
       ></board-nav>
       <card-list
         @addCard="addCard"
@@ -92,6 +94,11 @@ export default {
     async removeList(list) {
       await this.$store.dispatch({ type: "removeList", list });
     },
+    async removeBoard(board) {
+      await this.$store.dispatch({ type: "removeBoard", board });
+      await this.$store.dispatch({ type: "loadBoards"});
+      this.$router.push("/board")
+    },
     async remove(type, { req, run }) {
       this.msg = null;
       type = run[type];
@@ -99,19 +106,33 @@ export default {
         case "removeList":
           await this.removeList(req);
           break;
+        case "removeBoard":
+          await this.removeBoard(req);
+          break;
       }
     },
     async msgConfirm(type, req) {
       switch (type) {
         case "list":
           this.msg = {
-            title: "Delete list",
+            title: "Deletar Lista",
             value:
-              "All actions will be removed from the activiy\nfeed and you won't be able to re-open the\ncard. There is no undo.",
+              "Tem certeza que quer deletar a lista?\nEsta ação não pode ser desfeita.",
             background: true,
-            controls: { delete: "delete-btn", cancel: "cancel-btn" },
+            controls: { deletar: "deletebtn", cancelar: "cancel-btn" },
             req,
-            run: { delete: "removeList" },
+            run: { deletar: "removeList" },
+          };
+          break;
+        case "board":
+          this.msg = {
+            title: "Deletar Quadro",
+            value:
+              "Tem certeza que quer deletar o Quadro?\nEsta ação não pode ser desfeita.",
+            background: true,
+            controls: { deletar: "deletebtn", cancelar: "cancel-btn" },
+            req,
+            run: { deletar: "removeBoard" },
           };
           break;
       }

@@ -16,7 +16,9 @@
               <board-preview
                 :board="board"
                 @change="toggleStar"
-              ></board-preview>
+
+              ></span
+              ></span></board-preview>
             </li>
           </template>
         </ul>
@@ -80,6 +82,24 @@ export default {
       const idx = this.boards.findIndex((board) => board._id === changed._id);
       console.log(idx);
       if (idx > -1) this.boards.splice(idx, 1, deepCopy(changed));
+    },
+    async removeBoard(board) {
+      await this.$store.dispatch({ type: "removeBoard", board });
+    },
+    async msgConfirm(type, req) {
+      switch (type) {
+        case "board":
+          this.msg = {
+            title: "Deletar Quadro",
+            value:
+              "Tem certeza que quer deletar o Quadro?\nEsta ação não pode ser desfeita.",
+            background: true,
+            controls: { deletar: "deletebtn", cancelar: "cancel-btn" },
+            req,
+            run: { deletar: "removeBoard" },
+          };
+          break;
+      }
     },
   },
   computed: {

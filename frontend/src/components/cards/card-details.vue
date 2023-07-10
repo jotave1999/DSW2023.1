@@ -4,8 +4,8 @@
     <msg-modal
       :msg="msg"
       @close="msg = null"
-      @cancel="msg = null"
-      @delete="deleteConfirm"
+      @cancelar="msg = null"
+      @deletar="deleteConfirm"
     />
     <action-cmp
       v-if="action"
@@ -50,24 +50,6 @@
 
             </div>
             <div class="main-task-btns flex">
-              <h3>Adicione ao cartão</h3>
-              <div class="action-btns flex">
-                <button
-                  v-for="title in addToCardTxt"
-                  :key="'btn-' + title"
-                  @click="
-                    action = {
-                      type: title,
-                      target: $event.target,
-                      offset: { y: 36, x: 0 },
-                      lists: board.lists.map((list) => list.id),
-                    }
-                  "
-                >
-                  <span :class="toClass(title) + '-icon'"></span>
-                  {{ title }}
-                </button>
-              </div>
               <h3>Ações</h3>
               <div class="action-btns flex">
                 <button
@@ -202,7 +184,7 @@ export default {
             value:
               "Tem certeza que quer deletar este cartão ?\nEssa ação não pode ser desfeita",
             background: true,
-            controls: { delete: "delete-btn", cancel: "cancel-btn" },
+            controls: { deletar: "deletebtn", Cancelar: "cancel-btn" },
           };
           break;
       }

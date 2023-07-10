@@ -118,6 +118,7 @@ async function setCard(req, res) {
     try {
         const { session, query, body } = req;
         const { userId, boardId, listId } = query;
+        logger.info("dalkeeeeee", boardId)
         const { user } = session;
         const ret = await boardService.setCard(userId, boardId, listId, body, user);
         res.json(ret)
@@ -145,7 +146,8 @@ async function setItem(req, res) {
 async function remove(req, res) {
     try {
         const boardId = req.params.id;
-        // else ret = await boardService.remove(boardId);
+        logger.info(boardId)
+        ret = await boardService.remove(boardId);
         res.send(ret);
     } catch (err) {
         logger.error('Failed to remove board', err);

@@ -17,7 +17,7 @@
         type="text"
         class="input-form"
         v-model="listToEdit.title"
-        placeholder="Add a list"
+        placeholder="Insira o titulo da lista"
         ref="title"
         @keydown.esc="addToggle"
       />

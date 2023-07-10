@@ -2,7 +2,7 @@
   <transition name="fade">
     <section class="invite-modal" v-if="users">
       <div class="invite-header flex">
-        <h4>Invite to board</h4>
+        <h4>Convidar para o Quadro</h4>
         <span @click="$emit('close')"></span>
       </div>
       <div class="content">
@@ -14,7 +14,7 @@
           :filterable="true"
           :remote="true"
           reserve-keyword
-          placeholder="Please enter a keyword"
+          placeholder="Digite o nome do usuário"
           :remote-method="remoteMethod"
           :loading="loading"
         >
@@ -27,7 +27,7 @@
           </el-option>
         </el-select>
         <button class="full" :class="isInvited" @click="invite">
-          Sent invitation
+          Enviar Convite
         </button>
       </div>
     </section>
@@ -71,7 +71,6 @@ export default {
           this.loading = false;
           this.options = this.users.filter((user) => {
             return user.fullname.toLowerCase().includes(query);
-            // return user.fullname === query.toLowerCase().indexOf(query.toLowerCase()) > -1;
           });
         }, 200);
       } else {

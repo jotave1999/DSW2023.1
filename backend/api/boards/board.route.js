@@ -19,7 +19,7 @@ router.delete('/activity', requirePermission, removeActivity);
 router.delete('/list', requirePermission, removeList);
 router.delete('/card', requirePermission, removeCard);
 router.delete('/item', requirePermission, removeItem);
-router.delete('/:id', requirePermission, removeBoard);
+router.delete('/:id', requireAuth, removeBoard);
 
 module.exports = router;
 

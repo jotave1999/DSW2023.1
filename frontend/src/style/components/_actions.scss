@@ -76,10 +76,10 @@
     border-radius: 3px;
     line-height: 20px;
     font-size: 14px;
-    &:hover:not(.delete-btn) {
+    &:hover:not(.deletebtn) {
       background-color: #091e4214;
     }
-    &.delete-btn {
+    &.deletebtn {
       color: white;
       background-color: #b04632;
       &:hover {

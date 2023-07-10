@@ -78,7 +78,7 @@ export default {
     isHeaderEnabled() {
       return (
         (this.$route.name === "home" && !this.user) ||
-        this.$route.name === "login"
+        this.$route.name === "login"|| this.$route.name === "reqPassRecover"
       );
     },
     headerClass() {

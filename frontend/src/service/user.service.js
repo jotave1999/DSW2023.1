@@ -7,7 +7,9 @@ export const userService = {
     logout,
     signup,
     getLoggedinUser,
-    getUsers
+    getUsers,
+    reqPassRecover,
+    passRecover,
 }
 
 async function login(user) {
@@ -22,6 +24,16 @@ async function signup(user) {
     const signedUser = await httpService.post('auth/signup', user)
     socketService.setup(signedUser);
     return _saveLocalUser(signedUser)
+}
+
+async function reqPassRecover(email) {
+    const req = await httpService.post('user/recover/request', email)
+    return req
+}
+
+async function passRecover(user) {
+    const req = await httpService.post('user/recover', user)
+    return req
 }
 
 async function logout() {

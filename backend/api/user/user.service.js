@@ -3,6 +3,7 @@ const logger = require('../../service/logger.service');
 const { makeId } = require('../../service/utils.service');
 const ObjectId = require('mongodb').ObjectId
 const nodemailer = require('nodemailer');
+const bcrypt = require('bcrypt')
 
 const collectionDb = 'user';
 
@@ -64,6 +65,7 @@ async function add(user) {
             username: user.username,
             password: user.password,
             fullname: user.fullname,
+            email: user.email,
         }
         const collection = await dbService.getCollection(collectionDb);
         return await collection.insertOne(user);
@@ -79,7 +81,8 @@ async function update(user) {
             _id: ObjectId(user._id),
             username: user.username,
             fullname: user.fullname,
-            password: user.password
+            password: user.password,
+            email: user.email
         }
         const collection = await dbService.getCollection(collectionDb)
         await collection.updateOne({ '_id': userToSave._id }, { $set: userToSave })
@@ -99,14 +102,17 @@ async function changePass(user, password) {
 }
 
 async function recoverPass(recoverString, password) {
-
     try{
+        logger.info("dale dele dele dolly",recoverString, password)
+        const collection = await dbService.getCollection(collectionDb)
         user = await collection.findOne({"recoverString":recoverString})
         const saltRounds = 10
         logger.debug(`auth.service - recover user password: ${user.username}`)
         const hash = await bcrypt.hash(password, saltRounds);
         user.password = hash
-        return update(user)
+        logger.info(user.password)
+        await collection.updateOne({ 'email': user.email }, { $set: user })
+        return 
     } catch (err) {
         logger.error(`failed to recover pass to user '${recoverString}' from '${collectionDb}':`, error);
     }
@@ -114,10 +120,11 @@ async function recoverPass(recoverString, password) {
 
 async function requestPassRecover(email) {
     try {
-
+        const collection = await dbService.getCollection(collectionDb)
         user = await collection.findOne({"email":email})
         recoverString = makeId()
         logger.debug(`auth.service - request user password recover: ${email}`)
+        
        
         user = {...user, "recoverString":recoverString}
         await collection.updateOne({ 'email': email }, { $set: user })

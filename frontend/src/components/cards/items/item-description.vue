@@ -10,7 +10,7 @@
       ref="textEdit"
       @focus="isFocus = true"
       @blur="save()"
-      placeholder="Add a more detailed description..."
+      placeholder="Dê uma descrição para o seu cartão"
       spellcheck="false"
       v-model="description"
     ></textarea>

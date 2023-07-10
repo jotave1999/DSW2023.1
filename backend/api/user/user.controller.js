@@ -70,10 +70,10 @@ async function requestPassRecover(req, res) {
     }
 }
 
-async function passRecover(req, res) {
+async function recoverPass(req, res) {
     try {
         const {recoverString, password} = req.body;
-        res.json(await userService.passRecover(recoverString,password));
+        res.json(await userService.recoverPass(recoverString, password));
     } catch (err) {
         logger.error('Failed to password recover to user', err);
         res.status(500).send({ err: 'Failed to password recover to user' });
@@ -99,6 +99,6 @@ module.exports = {
     removeUser: remove,
     requestPassRecover,
     changePass,
-    passRecover
+    recoverPass
     
 }

@@ -20,6 +20,12 @@
             class="fullname"
             placeholder="Insira o Nome Completo"
           />
+          <input
+            v-if="!isLogin"
+            v-model="user.email"
+            class="fullname"
+            placeholder="Insira o Email"
+          />
           <div>
             <input
               :type="passwordType"
@@ -32,7 +38,8 @@
           <button type="submit">{{ btnTitle }}</button>
         </form>
         <hr />
-        <p class="sign-in" @click="isLogin = !isLogin">Can't log in? <ul><li>{{ isSignup }}</li></ul></p>
+        <p class="sign-in" @click="isLogin = !isLogin"><ul><li>{{ isSignup }}</li></ul></p>
+        <p class="sign-in" @click="toForgotPassword()"><ul><li>Esqueci minha senha</li></ul></p>
       </div>
     </div>
   </div>
@@ -51,6 +58,7 @@ export default {
         username: "",
         fullname: "",
         password: "",
+        email: "",
         imgUrl: "",
       },
       msg: null,
@@ -109,6 +117,10 @@ export default {
         background:false,
         controls: { ok: "" },
       };
+    },
+    toForgotPassword() {
+      this.$router.push("/pass/recover")
+      return
     },
   },
 };

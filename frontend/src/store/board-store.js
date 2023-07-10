@@ -60,8 +60,8 @@ export default {
       if (activityIdx < 0) activities.unshift(activity)
       else activities.splice(activityIdx, 1, activity)
     },
-    removeBoard(state, { boardId }) {
-      const boardIdx = state.boards.findIdx(el => el.id === boardId);
+    removeBoard(state, { board }) {
+      const boardIdx = state.boards.findIndex(el => el.id === board._id);
       state.boards.splice(boardIdx, 1);
     },
     removeList(state, { list }) {
@@ -130,10 +130,10 @@ export default {
         console.log('Create board failed..', err);
       }
     },
-    async removeBoard({ }, { boardId }) {
+    async removeBoard({ commit }, { board }) {
       try {
-        boardService.remove(boardId);
-        commit({ type: 'removeBoard', boardId });
+        boardService.remove(board._id);
+        commit({ type: 'removeBoard', board })
 
       } catch (err) {
         console.log('Remove board failed..', err);
@@ -170,7 +170,6 @@ export default {
     },
     async setList({ commit, dispatch, state }, { list, activityId }) {
       try {
-        // const activity = cardService.createActivity('list', 'added new list');
         const status = activityId ? 'restored' : list.id ? 'updated' : 'added';
         const save = deepCopy({ type: 'removeList', list, activityId });
         const activity = cardService.createActivity('list', null, status, list.id, null, null, save, activityId);
@@ -187,6 +186,7 @@ export default {
         const save = deepCopy({ type: 'removeCard', card, listId, activityId });
         const activity = cardService.createActivity('card', null, status, listId, card.id, null, save, activityId);
         card = await boardService.setCard(card, { boardId: state.board._id, listId });
+        console.log(state.board._id)
         if (JSON.stringify(card) !== JSON.stringify(save.card)) commit({ type: 'setCard', card, listId });
         dispatch({ type: 'setActivity', activity });
       } catch (err) {

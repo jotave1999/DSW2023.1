@@ -12,19 +12,18 @@
       <div class="board-menu-content">
         <div class="menu-content" v-if="contentToShow === 'Menu'">
           <ul class="menu-action-btns">
-            <li class="about-board" @click="setContent('About')">
-              <div class="title">
-                <span class="trello-icon"></span>
-                <span>Sobre este Quadro</span>
-              </div>
-              <p>Dê uma descrição para o seu Quadro</p>
-            </li>
             <li @click="setContent('Background')">
               <span
                 class="bg-icon"
                 :style="{ backgroundColor: 'lightblue' }"
               ></span>
               <span>Mudar fundo</span>
+            </li>
+            <li @click="removeBoard()">
+              <span
+                class="deletar-icon"
+              ></span>
+              <span>Deletar Quadro</span>
             </li>
           </ul>
         </div>
@@ -45,6 +44,7 @@ import Background from "./background-content.vue";
 
 import { getLoggedinUser } from "../../../service/user.service";
 import { cardService } from "../../../service/card.service";
+import { deepCopy } from "../../../service/util.service";
 
 export default {
   props: {
@@ -79,6 +79,10 @@ export default {
     },
     setBoard({ key, item }) {
       this.$store.dispatch({ type: "setBoardItem", key, item });
+    },
+    removeBoard() {
+      const board = deepCopy(this.board);
+      this.$emit("removeBoard", board);
     },
   },
   components: {

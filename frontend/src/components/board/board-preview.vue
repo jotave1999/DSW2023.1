@@ -57,6 +57,10 @@ export default {
         isFavorite: !this.board.isFavorite,
       });
     },
+    removeBoard() {
+      const board = deepCopy(this.board);
+      this.$emit("removeBoard", board);
+    },
   },
   computed: {
     imgSrc() {

@@ -14,7 +14,7 @@
         >
           <input
             type="text"
-            placeholder="Add board title"
+            placeholder="Insira o titulo do quadro"
             v-model="title"
             :style="darkStyle"
             required
@@ -30,7 +30,7 @@
           </div>
         </div>
       </div>
-      <button class="create-btn" @click="createBoard">Create board</button>
+      <button class="create-btn" @click="createBoard">Criar quadro</button>
     </div>
   </section>
 </template>

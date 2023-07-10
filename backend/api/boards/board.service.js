@@ -110,8 +110,6 @@ async function update(userId, body, boardId, key, user) {
         await collection.updateOne({ "_id": id }, { $set: { ...board } });
         board._id = boardId;
         logger.info(`board '${id}' has been updated.`)
-        if (key)
-            _restoreBoard(boardId);
         return (!key) ? board : body;
     } catch (err) {
         logger.error(`faild to update board '${id}'.`, err);
@@ -153,7 +151,6 @@ async function sort(userId, boardId, map) {
         await collection.updateOne({ "_id": id }, { $set: { ...board } });
         socketService.emitTo({ type: 'COMMIT', data: { type: 'sortBoard', userId, boardId, map } });
         logger.info(`board '${id}' has been sorted.`);
-        _restoreBoard(boardId);
         return board.lists;
     } catch (err) {
         console.log(err);
@@ -206,7 +203,6 @@ async function setList(userId, boardId, list, user) {
         await collection.updateOne({ "_id": id }, { $set: { ...board } });
         socketService.emitTo({ type: 'COMMIT', data: { type: 'setList', userId, boardId: id, list } });
         logger.info(`list '${list.id}' has been updated.`);
-        _restoreBoard(boardId);
         return list;
     } catch (err) {
         logger.error(`faild to set list '${id}'.`, err);
@@ -233,7 +229,6 @@ async function setCard(userId, boardId, listId, card, user) {
         await collection.updateOne({ "_id": id }, { $set: { ...board } });
         socketService.emitTo({ type: 'COMMIT', data: { type: 'setCard', userId, boardId: id, listId, card } });
         logger.info(`card '${card.id}' has been updated.`);
-        _restoreBoard(boardId);
         return card;
     } catch (err) {
         logger.error(`faild to set card '${id}'.`, err);
@@ -262,7 +257,6 @@ async function setItem(userId, boardId, listId, cardId, { key, item }, user) {
         await collection.updateOne({ "_id": id }, { $set: { ...board } });
         socketService.emitTo({ type: 'COMMIT', data: { type: 'setItem', userId, boardId: id, listId, cardId, item, key } });
         logger.info(`${key} has been updated.`);
-        _restoreBoard(boardId);
         return item;
     } catch (err) {
         logger.error(`faild to set item '${id}'.`, err);
@@ -283,7 +277,6 @@ async function removeActivity({ boardId, activity }) {
         board.lastActivity = Date.now();
         await collection.updateOne({ "_id": id }, { $set: { ...board } });
         socketService.emitTo({ type: 'COMMIT', data: { type: 'removeActivity', userId: activity.createdBy._id, boardId: boardId, activity } });
-        _restoreBoard(boardId);
         return activity;
     } catch (err) {
         logger.error(`faild to remove list '${id}'.`, err);
@@ -303,7 +296,6 @@ async function removeList(userId, boardId, list, user) {
         await collection.updateOne({ "_id": id }, { $set: { ...board } });
         socketService.emitTo({ type: 'COMMIT', data: { type: 'removeList', userId, boardId: id, list } });
         logger.info(`list '${list.id}' has been removed.`);
-        _restoreBoard(boardId);
         return list;
     } catch (err) {
         logger.error(`faild to remove list '${list.id}'.`, err);
@@ -325,7 +317,6 @@ async function removeCard(userId, boardId, listId, card, user) {
         await collection.updateOne({ "_id": id }, { $set: { ...board } });
         socketService.emitTo({ type: 'COMMIT', data: { type: 'removeCard', userId, boardId: id, listId, card } });
         logger.info(`card '${card.id}' has been removed.`);
-        _restoreBoard(boardId);
         return card;
     } catch (err) {
         logger.error(`faild to remove card '${card.id}'.`, err);
@@ -349,7 +340,6 @@ async function removeItem(userId, boardId, listId, cardId, { key, item }, user) 
         await collection.updateOne({ "_id": id }, { $set: { ...board } });
         socketService.emitTo({ type: 'COMMIT', data: { user, type: 'removeItem', userId, boardId: id, listId, cardId, item, key } });
         logger.info(`'${key}' has been removed.`);
-        _restoreBoard(boardId);
         return item;
     } catch (err) {
         logger.error(`faild to remove item from '${key}'.`, err);
@@ -398,7 +388,7 @@ function _createBoard(title, style, createdBy) {
         labels: labels.map(label => ({ id: utilService.makeId(), ...label })),
         lists: [{
             id: utilService.makeId(),
-            title: 'New list',
+            title: 'Nova Lista',
             cards: [],
             style: {},
         }],
@@ -407,12 +397,5 @@ function _createBoard(title, style, createdBy) {
         activityCount: 0,
         lastActivity: Date.now(),
         isFavorite: false
-    }
-}
-
-function _restoreBoard(id) {
-    if (demoBoard[id]) {
-        const board = { ...demoBoard[id], lastActivity: Date.now(), activityCount: demoBoard[id].activities.length };
-        utilService.debounce(() => update(null, board, id), id, 1000 * 60 * 10);
     }
 }

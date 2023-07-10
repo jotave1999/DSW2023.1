@@ -44,6 +44,7 @@
         v-if="isMenuModal"
         :board="board"
         @close="toggleMenuModal"
+        @removeBoard="(data) => removeBoard(data)"
       ></menu-modal>
     </div>
   </section>
@@ -88,6 +89,10 @@ export default {
       this.board.members.push(...members);
       this.$store.dispatch({ type: "updateBoard", board: this.board });
     },
+    removeBoard(board) {
+      console.log("hahahahahah")
+      this.$emit("removeBoard1", board);
+    },
   },
   computed: {
     darkStyle() {
@@ -101,6 +106,7 @@ export default {
     inviteModal,
     menuModal,
   },
+  
 };
 </script>
 

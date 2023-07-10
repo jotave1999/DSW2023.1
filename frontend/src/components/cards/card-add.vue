@@ -13,7 +13,7 @@
         name="add-card"
         cols="30"
         rows="10"
-        placeholder="Enter a title for this card..."
+        placeholder="Insira o titulo do cartão..."
         v-model="cardToEdit.title"
         spellcheck="false"
       ></textarea>

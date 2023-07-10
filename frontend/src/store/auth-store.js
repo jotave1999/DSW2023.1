@@ -45,6 +45,27 @@ export default {
             }
 
         },
+        async reqPassRecover({ commit },{ email }) {
+            try {
+                const request = await userService.reqPassRecover(email) 
+                return request;
+            } catch (err) {
+                console.log('userStore: Error in reqRecoverPass', err)
+                throw err
+            }
+
+        },
+        async passRecover({ commit }, {user}) {
+            try {
+                console.log("iaiaiaiaiaiaiai", user.password, user.recoverString)
+                const request = await userService.passRecover(user) 
+                return request;
+            } catch (err) {
+                console.log('userStore: Error in passRecover', err)
+                throw err
+            }
+
+        },
         async logout({ commit }) {
             try {
                 await userService.logout();
