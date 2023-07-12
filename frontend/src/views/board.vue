@@ -58,7 +58,6 @@ export default {
       },
       card: null,
       boardStyle: null,
-      activity: null,
       isDashboard: false,
       fn: {
         removeList: async (list) => {
@@ -140,17 +139,6 @@ export default {
     socketUpdate(data) {
       // console.log("socket >> ", data);
       this.$store.dispatch({ type: "socket", socketCmd: data });
-      if (data.type === "setActivity") {
-        const { activity } = data;
-        if (!activity.mentions || !activity.mentions.length) {
-          activity.mentions = cardService.getMentions(
-            this.board,
-            activity.listId,
-            activity.cardId
-          );
-        }
-        this.activity = activity;
-      }
     },
   },
   computed: {

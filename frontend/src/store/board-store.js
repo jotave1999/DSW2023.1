@@ -1,7 +1,6 @@
 import { typeOf, sortByIds, deepCopy } from '../service/util.service.js';
 import { boardService } from '../service/board.service.js';
 import { cardService } from '../service/card.service.js';
-import { activityService } from '../service/activity.service.js';
 import { getLoggedinUser } from '../service/user.service.js';
 
 export default {
@@ -54,12 +53,6 @@ export default {
         else if (JSON.stringify(card[key][itemIdx]) !== JSON.stringify(item)) card[key].splice(itemIdx, 1, item)
       } else card[key] = item;//if (!card[key] || item === null || (typeOf(item) === typeOf(card[key]) && deepCopy(item) !== deepCopy(card[key]))) card[key] = item;
     },
-    setActivity(state, { activity }) {
-      const activities = state.board.activities
-      const activityIdx = activities.findIndex(currActivity => currActivity.id === activity.id)
-      if (activityIdx < 0) activities.unshift(activity)
-      else activities.splice(activityIdx, 1, activity)
-    },
     removeBoard(state, { board }) {
       const boardIdx = state.boards.findIndex(el => el.id === board._id);
       state.boards.splice(boardIdx, 1);
@@ -82,10 +75,6 @@ export default {
       } else if (typeOf(card[key] === 'Object')) card[key] = {};
       else if (typeOf(card[key] === 'Array')) card[key] = [];
       else card[key] = null;
-    },
-    removeActivity(state, { activity }) {
-      const activityIdx = state.board.activities.findIndex(el => el.id === activity.id)
-      if (activityIdx > -1) state.board.activities.splice(activityIdx, 1);
     },
     sortBoard(state, { map }) {
       const listIds = [];
@@ -153,47 +142,40 @@ export default {
       return card
     },
     // SET
-    async setBoardItem({ state, commit, dispatch }, { item, key, boardId, activityId }) {
+    async setBoardItem({ state, commit, dispatch }, { item, key, boardId}) {
       try {
         boardId ??= state.board?._id;
         if (boardId === state.board?._id) {
           const save = deepCopy({ type: 'setBoardItem', item: state.board[key] || null, key, boardId });
-          const activity = cardService.createActivity('board', key, save ? 'updated' : 'added', null, null, state.board.members, save, activityId);
+        
           commit({ type: 'setBoardItem', item, key, boardId });
           if (!await boardService.setBoard(item, key, boardId)) commit(save);
-          else dispatch({ type: 'setActivity', activity });
         } else
           await boardService.setBoard(item, key, boardId);
       } catch (err) {
         console.log(err);
       }
     },
-    async setList({ commit, dispatch, state }, { list, activityId }) {
+    async setList({ commit, dispatch, state }, { list}) {
       try {
-        const status = activityId ? 'restored' : list.id ? 'updated' : 'added';
-        const save = deepCopy({ type: 'removeList', list, activityId });
-        const activity = cardService.createActivity('list', null, status, list.id, null, null, save, activityId);
+        const save = deepCopy({ type: 'removeList', list});
         list = await boardService.setList(list, { boardId: state.board._id })
         if (JSON.stringify(list) !== JSON.stringify(save.list)) commit({ type: 'setList', list });
-        dispatch({ type: 'setActivity', activity });
       } catch (err) {
         console.log('Set list failed...', err);
       }
     },
-    async setCard({ commit, state, dispatch }, { card, listId, activityId }) {
+    async setCard({ commit, state, dispatch }, { card, listId }) {
       try {
-        const status = activityId ? 'restored' : card.id ? 'updated' : 'added';
-        const save = deepCopy({ type: 'removeCard', card, listId, activityId });
-        const activity = cardService.createActivity('card', null, status, listId, card.id, null, save, activityId);
+        const save = deepCopy({ type: 'removeCard', card, listId });
         card = await boardService.setCard(card, { boardId: state.board._id, listId });
         console.log(state.board._id)
         if (JSON.stringify(card) !== JSON.stringify(save.card)) commit({ type: 'setCard', card, listId });
-        dispatch({ type: 'setActivity', activity });
       } catch (err) {
         console.log('Set card failed...', err);
       }
     },
-    async setItem({ commit, state, dispatch }, { item, listId, cardId, key, activityId }) {
+    async setItem({ commit, state, dispatch }, { item, listId, cardId, key }) {
       try {
         const list = state.board.lists.find(list => list.cards.find(card => card.id === cardId)) || state.board.lists.find(list => list.id === listId);
         // const list = state.board.lists.find(list => list.id === listId);
@@ -202,86 +184,58 @@ export default {
         if (typeOf(card[key]) === 'Array')
           isAdded = Boolean(item.id) && !Boolean(card[key].find(cardItem => cardItem.id === item.id));
         else isAdded = !Boolean(card[key]);
-        const status = activityId ? 'restored' : isAdded ? 'added' : (!item) ? 'removed' : 'updated';
-        const save = deepCopy({ type: isAdded ? 'removeItem' : 'setItem', item: card[key], listId, cardId, key, activityId });
-        const activity = cardService.createActivity('item', key, status, listId, card.id, null, save, activityId);
+        const save = deepCopy({ type: isAdded ? 'removeItem' : 'setItem', item: card[key], listId, cardId, key });
         commit({ type: 'setItem', item, listId, cardId, key });
         item = await boardService.setItem({ key, item }, { boardId: state.board._id, listId, cardId })
         if (!item) commit(save);
-        else dispatch({ type: 'setActivity', activity });
         return item;
       } catch (err) {
         console.log('Set item failed...', err);
       }
     },
-    async setActivity({ commit, state }, { activity }) {
-      try {
-        activity = await activityService.add(state.board, activity);
-        commit({ type: 'setActivity', activity });
-      } catch (err) {
-        console.log('Set activity failed..', err);
-      }
-    },
     // REMOVE
-    async removeList({ commit, state, dispatch }, { list, activityId }) {
+    async removeList({ commit, state, dispatch }, { list }) {
       try {
-        const save = deepCopy({ type: 'setList', list, activityId });
-        const activity = cardService.createActivity('list', null, 'removed', list.id, null, null, save, activityId);
+        const save = deepCopy({ type: 'setList', list });
         list = await boardService.removeList(list, { boardId: state.board._id });
         commit({ type: 'removeList', list });
-        dispatch({ type: 'setActivity', activity });
       } catch (err) {
         console.log('Remove list failed...', err);
       }
     },
-    async removeCard({ commit, state, dispatch }, { listId, card, activityId }) {
+    async removeCard({ commit, state, dispatch }, { listId, card }) {
       try {
-        const save = deepCopy({ type: 'setCard', listId, card, activityId });
-        const activity = cardService.createActivity('card', null, 'removed', listId, card.id, null, save, activityId);
+        const save = deepCopy({ type: 'setCard', listId, card });
         card = await boardService.removeCard(card, { boardId: state.board._id, listId })
         commit({ type: 'removeCard', listId, card });
-        dispatch({ type: 'setActivity', activity });
       } catch (err) {
         console.log('Remove card failed...', err);
       }
     },
-    async removeItem({ commit, state, dispatch }, { item, listId, cardId, key, activityId }) {
+    async removeItem({ commit, state, dispatch }, { item, listId, cardId, key }) {
       try {
         const list = state.board.lists.find(list => list.cards.find(card => card.id === cardId));
         const card = list.cards.find(card => card.id === cardId);
         const save = deepCopy({ type: 'setItem', listId, cardId, item, key });
-        const activity = cardService.createActivity('card', key, 'removed', listId, cardId, null, save, activityId);
         item = await boardService.removeItem({ key, item }, { boardId: state.board._id, listId, cardId });
         commit({ type: 'removeItem', item, listId, cardId, key });
-        dispatch({ type: 'setActivity', activity });
       } catch (err) {
         console.log('Remove item failed', err);
       }
     },
-    async removeActivity({ commit, state, dispatch }, { activity }) {
-      try {
-        activity = await activityService.remove(state.board._id, activity);
-        commit({ type: 'removeActivity', activity });
-        dispatch({ type: 'setActivity', activity: cardService.createActivity('card', `removed comment`) });
-      } catch (err) {
-        console.log('remove activity failed...', err);
-      }
-    },
+  
     // COPY
     async copyCard({ commit, state }, { listId, card }) {
       try {
-        const activity = cardService.createActivity('card');
         delete card.id
         card = await boardService.setCard(card, { boardId: state.board._id, listId });
-        activity.title = `ducplicate card '${card.title}'`;
-        activity.cardId = card.id;
         commit({ type: 'setCard', card, listId });
-        dispatch({ type: 'setActivity', activity });
         return card
       } catch (err) {
         console.log('failid to copy card...')
       }
     },
+    
     // SORT
     async sortBoard({ commit, state }, { map }) {
       try {

@@ -23,19 +23,6 @@
           </template>
         </ul>
       </template>
-      <template v-if="boardToShow.recent && boardToShow.recent.length">
-        <h3 class="board-list-title">Atividade Recente</h3>
-        <ul class="board-list grid" v-if="boardToShow">
-          <template class="grid" v-for="board in boardToShow.recent">
-            <li v-if="!board.isStar" :key="'R' + board._id">
-              <board-preview
-                :board="board"
-                @change="toggleStar"
-              ></board-preview>
-            </li>
-          </template>
-        </ul>
-      </template>
       <template v-if="boardToShow.other && boardToShow.other.length">
         <h3 class="board-list-title">Outros Quadros</h3>
         <ul class="board-list grid" v-if="boardToShow">
@@ -62,12 +49,10 @@ export default {
       isGuest: this.$store.getters.loggedinUser?.username === "Guest",
       boards: null,
       options: [
-        "Mais ativos",
-        "Ultimos ativos",
         "Alfabéticamente A-Z",
         "Alfabéticamente Z-A",
       ],
-      sortBy: "Mais ativos",
+      sortBy: "Alfabéticamente A-Z",
       searchVal: "",
     };
   },
@@ -105,12 +90,6 @@ export default {
   computed: {
     boardToShow() {
       if (!this.boards) return null;
-      const active = this.boards
-        .sort((a, b) => b.activityCount - a.activityCount)
-        .slice(0, 4);
-      const recent = this.boards
-        .sort((a, b) => b.lastActivity - a.lastActivity)
-        .slice(0, 4);
       const star = this.boards.filter((board) => board.isFavorite);
       const other = this.boards.filter(
         (board) => !star.find((star) => star === board)
@@ -118,19 +97,9 @@ export default {
       const demo = this.isGuest
         ? this.boards.filter((board) => board.isDemoBoard)
         : [];
-      const boards = { demo, star, active, recent, other };
+      const boards = { demo, star, other };
       for (const key in boards) {
         switch (this.sortBy) {
-          case "Mais ativos":
-            boards[key] = boards[key].sort(
-              (a, b) => b.activityCount - a.activityCount
-            );
-            break;
-          case "Ultimos ativos":
-            boards[key] = boards[key].sort(
-              (a, b) => b.lastActivity - a.lastActivity
-            );
-            break;
           case "Alfabéticamente A-Z":
             boards[key] = boards[key].sort((a, b) =>
               a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1

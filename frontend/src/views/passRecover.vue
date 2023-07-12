@@ -50,7 +50,6 @@ export default {
   methods: {
     async changePass() {
       var user = null;
-      console.log("uauauauauauauaua",this.user.recoverString, this.user.password)
       try {
           if (!this.user.password) {
             this.loginMsg("Por favor, insira a Senha que deseja mudar");

@@ -65,13 +65,11 @@
         <p
           v-else
           class="card-title"
-          :style="{ ...fullCoverColorStyle, ...fullCoverFontStyle }"
         >
           {{ card.title }}
         </p>
         <card-preview-badge
           :card="card"
-          :fullCoverColorStyle="fullCoverColorStyle"
           @set="dispatchSetItem"
         />
       </div>

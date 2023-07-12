@@ -30,7 +30,6 @@
 </template>
 
 <script>
-import attachment from "./add-attachment.vue";
 import members from "./add-member.vue";
 import labels from "./add-label.vue";
 import copy from "./add-card.vue";
@@ -141,7 +140,6 @@ export default {
     },
   },
   components: {
-    attachment,
     members,
     labels,
     copy,

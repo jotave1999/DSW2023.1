@@ -57,23 +57,6 @@ export default {
   },
   created() {},
   methods: {
-    async restore(activity) {
-      await this.$store.dispatch({
-        activityId: activity.id,
-        ...activity.dispatch,
-        createdAt: Date.now(),
-      });
-      if (activity.listId && activity.cardId) this.goTo(activity);
-    },
-    goTo(activity) {
-      if (!activity.listId || !activity.cardId) return;
-      this.$router.push({
-        path: `${this.$route.path}?listId=${activity.listId}&cardId=${activity.cardId}`,
-      });
-    },
-    activityStyle(activity) {
-      return !activity.listId || !activity.cardId ? {} : { cursor: "pointer" };
-    },
     setContent(val) {
       this.contentToShow = val;
     },
@@ -90,28 +73,6 @@ export default {
     Background,
   },
   computed: {
-    activities() {
-      return this.board.activities
-        .filter((activity) => {
-          if (activity.title.includes("undefined")) return false;
-          if (!activity.mentions || !activity.mentions.length)
-            activity.mentions = cardService.getMentions(
-              this.board,
-              activity.listId,
-              activity.cardId
-            );
-          return (
-            activity.createdBy._id === getLoggedinUser()?._id ||
-            !activity.mentions ||
-            !activity.mentions.length ||
-            activity.mentions.find(
-              (user) => user._id === getLoggedinUser()?._id
-            )
-          );
-        })
-        .sort((a, b) => b.createdAt - a.createdAt)
-        .slice(0, 50);
-    },
   },
 };
 </script>

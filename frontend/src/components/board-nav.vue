@@ -90,7 +90,6 @@ export default {
       this.$store.dispatch({ type: "updateBoard", board: this.board });
     },
     removeBoard(board) {
-      console.log("hahahahahah")
       this.$emit("removeBoard1", board);
     },
   },

@@ -22,15 +22,11 @@ import { deepCopy } from "../../service/util.service";
 export default {
   props: {
     card: Object,
-    fullCoverColorStyle: Object,
   },
   components: {
     Avatar,
   },
   computed: {
-    getCountAttachments() {
-      return this.card.attachments && this.card.attachments.length;
-    },
   },
 };
 </script>

@@ -103,7 +103,6 @@ async function changePass(user, password) {
 
 async function recoverPass(recoverString, password) {
     try{
-        logger.info("dale dele dele dolly",recoverString, password)
         const collection = await dbService.getCollection(collectionDb)
         user = await collection.findOne({"recoverString":recoverString})
         const saltRounds = 10

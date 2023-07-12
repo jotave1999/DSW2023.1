@@ -96,41 +96,6 @@
     margin-bottom: 4px;
   }
 
-  .attachment {
-    flex-direction: column;
-
-    > * {
-      cursor: pointer;
-    }
-
-    .computer-link {
-      color: #5e6c84;
-      line-height: 16px;
-      padding: 12px 0;
-      border-bottom: 1px solid #091e4221;
-
-      &:hover {
-        background-color: #f5f6f8;
-      }
-    }
-
-    .link-input {
-      color: #5e6c84;
-      font-size: 12px;
-      font-weight: 700;
-      line-height: 16px;
-      padding: 12px 0;
-    }
-
-    p {
-      margin: 8px 0 0 0;
-      padding-top: 10px;
-      border-top: 1px solid #091e4221;
-      color: #5e6c84;
-      font-size: 14px;
-    }
-  }
-
   .checklist {
     button {
       background-color: #0079bf;
@@ -533,31 +498,7 @@
         }
       }
     }
-    .attachment-section {
-      display: flex;
-      flex-direction: column;
-      label {
-        display: block;
-        margin: 16px 0 4px 0;
-      }
-      .upload {
-        margin-top: 5px;
-        display: block;
-        padding: 6px 12px;
-        align-self: flex-start;
-        background-color: #091e420a;
-        color: #586172;
-        border: none;
-        border-radius: 3px;
-        line-height: 20px;
-        font-size: 14px;
-        font-weight: 400;
-        text-align: center;
-        &:hover {
-          background-color: #091e4214;
-        }
-      }
-    }
+
     .img-section {
       display: flex;
       flex-wrap: wrap;
@@ -685,12 +626,6 @@
       }
     }
   }
-
-  .edit-attachment {
-    display: flex;
-    flex-direction: column;
-  }
-
   .add-card-action {
     color: #5e6c84;
     .title {

@@ -4,13 +4,11 @@ import { userService } from './user.service';
 export const cardService = {
     createList,
     createCard,
-    addAttachment,
     addCheckList,
     addCheckListItem,
     addLocation,
     setImg,
     setCover,
-    createActivity,
     getMentions,
     getCardById,
 }
@@ -44,7 +42,6 @@ function createCard() {
             createdAt: null,
             completedAt: null,
         },
-        attachments: [],
         location: null,
         canvas: [],
         cover: {
@@ -54,31 +51,6 @@ function createCard() {
             imgId: '',
         },
         archiveAt: 0,
-    }
-}
-
-function createActivity(type = '', key = null, title = null, listId = '', cardId = '', mentions = [], dispatch, activityId) {
-    const text = {
-        dueDate: 'due date',
-        todo: 'todo',
-        attachments: 'attachment',
-        archiveAt: 'archive tag',
-        desc: 'description',
-        labelsIds: 'labels',
-        style: 'background',
-    }
-    if (key) title += ` ${text[key] || key.toLowerCase()}`;
-    else if (dispatch) title += ` '${dispatch.item?.title || dispatch.card?.title || dispatch.list?.title}'`;
-    return {
-        id: activityId || null,
-        createdAt: Date.now(),
-        createdBy: userService.getLoggedinUser(),
-        type,
-        title,
-        cardId,
-        listId,
-        mentions,
-        dispatch,
     }
 }
 
@@ -130,15 +102,6 @@ function addCheckListItem(title, members = []) {
     }
 }
 
-function addAttachment(url, fileName, type, suffix) {
-    return {
-        createdAt: Date.now(),
-        url,
-        fileName,
-        type,
-        suffix
-    }
-}
 
 function addLocation(address) {
     return {

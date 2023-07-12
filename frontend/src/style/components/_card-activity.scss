@@ -57,11 +57,6 @@
       font-family: Trello;
     }
 
-    .attachment::before {
-      cursor: pointer;
-      content: "\e908";
-    }
-
     .member::before {
       content: "\e946";
       cursor: pointer;

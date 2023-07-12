@@ -41,13 +41,6 @@
           <main class="main-task flex">
             <div class="main-task-details">
               <description :card="card" @set="dispatchSetItem" />
-              <attachments
-                card="card"
-                @remove="dispatchRemoveItem"
-                @cover="dispatchSetItem"
-                @popup="(act) => (action = act)"
-              />
-
             </div>
             <div class="main-task-btns flex">
               <h3>Ações</h3>
@@ -71,7 +64,7 @@
 </template>
 
 <script>
-import attachments from "./items/item-attaschments.vue";
+
 import description from "../cards/items/item-description.vue";
 import actionCmp from "./action-popup/actions-popup.vue";
 import msgModal from "@/components/msg-modal.vue";
@@ -233,7 +226,6 @@ export default {
     },
   },
   components: {
-    attachments,
     description,
     actionCmp,
     msgModal,

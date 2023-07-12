@@ -6,7 +6,7 @@ async function login(username, password) {
     logger.debug(`auth.service - login with username: ${username}`)
     const user = await userService.get({ username })
     if (!user) return Promise.reject('Invalid username or password');
-    else if (!bcrypt.compare(password, user.password)) return Promise.reject('Invalid password');
+    if (!await bcrypt.compare(password, user.password)) return Promise.reject('Invalid password');
     delete user.password
     return user
 }

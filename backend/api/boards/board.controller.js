@@ -9,11 +9,9 @@ module.exports = {
     updateBoard: update,
     removeBoard: remove,
     sortBoard: sort,
-    setActivity,
     setList,
     setCard,
     setItem,
-    removeActivity,
     removeList,
     removeCard,
     removeItem,
@@ -87,18 +85,6 @@ async function update(req, res) {
     }
 }
 
-// SET ACTIVITY
-async function setActivity(req, res) {
-    try {
-        const { boardId } = req.query;
-        const activiy = req.body;
-        res.json(await boardService.setActivity(activiy, boardId));
-    } catch (err) {
-        logger.error('Failed to add activity', err);
-        res.status(500).send({ err: 'Failed to add activity' });
-    }
-}
-
 // SET LIST (ADD/EDIT)
 async function setList(req, res) {
     try {
@@ -118,7 +104,6 @@ async function setCard(req, res) {
     try {
         const { session, query, body } = req;
         const { userId, boardId, listId } = query;
-        logger.info("dalkeeeeee", boardId)
         const { user } = session;
         const ret = await boardService.setCard(userId, boardId, listId, body, user);
         res.json(ret)
@@ -169,15 +154,6 @@ async function sort(req, res) {
     }
 }
 
-async function removeActivity(req, res) {
-    try {
-        const ret = await boardService.removeActivity(req.body);
-        res.send(ret);
-    } catch (err) {
-        logger.error('Failed to remove activity', err);
-        res.status(500).send({ err: 'Failed to remove activity' });
-    }
-}
 async function removeList(req, res) {
     try {
         const { session, query, body } = req;

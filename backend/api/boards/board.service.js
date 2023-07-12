@@ -17,11 +17,9 @@ module.exports = {
     setList,
     setCard,
     setItem,
-    removeActivity,
     removeList,
     removeCard,
     removeItem,
-    setActivity,
 }
 
 async function permission(boardId, userId) {
@@ -53,7 +51,7 @@ async function query(query) {
                             cond: { $eq: ['$$member._id', user._id] }
                         }
                     },
-                    _id: 1, title: 1, style: 1, members: 1, activityCount: 1, lastActivity: 1, isFavorite: 1, isDemoBoard: 1
+                    _id: 1, title: 1, style: 1, members: 1, isFavorite: 1, isDemoBoard: 1
                 }
             }
         ]);
@@ -157,33 +155,6 @@ async function sort(userId, boardId, map) {
     }
 }
 
-async function setActivity(activity, boardId) {
-    try {
-        const collection = await dbService.getCollection(collectionDb);
-        const id = ObjectId(boardId);
-        const board = await collection.findOne(id);
-        if (board.isReadonly) throw 'Board is read only';
-        delete board._id;
-        const activities = board.activities
-        if (activity.id) {
-            activityIdx = activities.findIndex(activity => activity.id === activity.id);
-            activities.splice(activityIdx, 1, activity);
-        } else {
-            activity.id = utilService.makeId();
-            activities.unshift(activity);
-        }
-        socketService.emitTo({ type: 'COMMIT', data: { type: 'setActivity', userId: activity.createdBy._id, boardId: board._id, activity } });
-        board.activityCount++;
-        board.lastActivity = Date.now();
-        await collection.updateOne({ "_id": id }, { $set: { ...board } });
-        board._id = id;
-        return activity
-    } catch (err) {
-        logger.error('adding failed:', err);
-        throw err;
-    }
-}
-
 async function setList(userId, boardId, list, user) {
     try {
         const collection = await dbService.getCollection(collectionDb);
@@ -264,26 +235,6 @@ async function setItem(userId, boardId, listId, cardId, { key, item }, user) {
     }
 }
 
-async function removeActivity({ boardId, activity }) {
-    try {
-        const collection = await dbService.getCollection(collectionDb);
-        const id = ObjectId(boardId);
-        const board = await collection.findOne(id);
-        if (board.isReadonly) throw 'Board is read only';
-        delete board._id;
-        const activityIdx = board.activities.findIndex(currActivity => currActivity.id === activity.id);
-        if (activityIdx > -1) board.activities.splice(activityIdx, 1);
-        board.activityCount++;
-        board.lastActivity = Date.now();
-        await collection.updateOne({ "_id": id }, { $set: { ...board } });
-        socketService.emitTo({ type: 'COMMIT', data: { type: 'removeActivity', userId: activity.createdBy._id, boardId: boardId, activity } });
-        return activity;
-    } catch (err) {
-        logger.error(`faild to remove list '${id}'.`, err);
-        throw err;
-    }
-}
-
 async function removeList(userId, boardId, list, user) {
     try {
         const collection = await dbService.getCollection(collectionDb);
@@ -313,7 +264,6 @@ async function removeCard(userId, boardId, listId, card, user) {
         const list = board.lists.find(list => list.cards.find(c => c.id === card.id));
         const cardIdx = list.cards.findIndex(currCard => currCard.id === card.id);
         if (cardIdx > -1) list.cards.splice(cardIdx, 1);
-        board.activities = board.activities.filter(activity => activity.type !== 'item' && activity.cardId !== card.id);
         await collection.updateOne({ "_id": id }, { $set: { ...board } });
         socketService.emitTo({ type: 'COMMIT', data: { type: 'removeCard', userId, boardId: id, listId, card } });
         logger.info(`card '${card.id}' has been removed.`);
@@ -394,8 +344,6 @@ function _createBoard(title, style, createdBy) {
         }],
         isReadonly: false,
         isDemoBoard: false,
-        activityCount: 0,
-        lastActivity: Date.now(),
         isFavorite: false
     }
 }

@@ -12,11 +12,9 @@ export const boardService = {
   setList,
   setCard,
   setItem,
-  setActivity,
   removeList,
   removeCard,
   removeItem,
-  removeActivity,
 }
 
 const API = 'board/'
@@ -61,11 +59,6 @@ async function setItem(item, query) {
   return serverService.put(API + '/item', item, query);
 }
 
-async function setActivity(activity, query) {
-  if (activity.id) return serverService.put(API, activity, query);
-  else return serverService.post(API + '/activity', activity, query);
-}
-
 async function removeList(list, query) {
   const ret = serverService.delete(API + '/list', list, { ...query, listId: list.id });
   return ret;
@@ -77,8 +70,4 @@ async function removeCard(card, query) {
 
 async function removeItem(item, query) {
   return serverService.delete(API + '/item', item, query);
-}
-
-async function removeActivity(activity, query) {
-  return serverService.delete(API + '/activity', activity, query);
 }

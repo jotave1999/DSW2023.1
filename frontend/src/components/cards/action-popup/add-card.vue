@@ -19,10 +19,6 @@
       <label v-if="card.dueDate.date"
         ><input type="checkbox" v-model="keep.dueDate" />Due Date</label
       >
-      <label v-if="card.attachments.length"
-        ><input type="checkbox" v-model="keep.attachments" />Attachments ({{
-          card.attachments.length
-        }})</label
       >
       <label v-if="card.checkList.length"
         ><input type="checkbox" v-model="keep.checkList" />Checklist ({{
@@ -63,10 +59,6 @@ export default {
       keep: {
         labelsIds: true,
         members: true,
-        attachments: true,
-        location: true,
-        checkList: true,
-        dueDate: true,
       },
     };
   },
@@ -82,16 +74,6 @@ export default {
           card.title = this.title;
           if (!this.keep.labelsIds) card.labelsIds = [];
           if (!this.keep.members) card.members = [];
-          if (!this.keep.attachments) card.attachments = [];
-          if (!this.keep.location) card.location = null;
-          if (!this.keep.checkList) card.checkList = [];
-          if (!this.keep.dueDate)
-            card.dueDate = {
-              date: null,
-              isComplete: null,
-              createdAt: null,
-              completedAt: null,
-            };
           this.$emit(this.action.type.toLowerCase(), { card, listId });
           break;
         case "move":

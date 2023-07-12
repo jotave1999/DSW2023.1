@@ -206,45 +206,6 @@ div.card-preview-container {
             padding: 0;
           }
         }
-        .attachments {
-          display: flex;
-          align-items: center;
-          &::before {
-            font-family: Trello;
-            content: "\e908";
-            font-size: 16px;
-          }
-        }
-        .checkList {
-          display: flex;
-          align-items: center;
-          &::before {
-            font-family: Trello;
-            content: "\e919";
-            font-size: 16px;
-          }
-        }
-        .location {
-          display: flex;
-          align-items: center;
-          &::before {
-            font-family: Trello;
-            content: "\e943";
-            font-size: 16px;
-          }
-        }
-        .video {
-          box-sizing: content-box;
-          height: 16px;
-          width: 16px;
-          display: flex;
-          align-items: center;
-          &::before {
-            font-family: Trello;
-            content: "\e943";
-            font-size: 16px;
-          }
-        }
         .complete {
           background-color: #61bd4f;
         }
